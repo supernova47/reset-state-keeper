@@ -1,0 +1,80 @@
+<div class="rskFuelApp bngApp" ng-class="{'is-collapsed': collapsed}">
+  <link type="text/css" rel="stylesheet" href="/ui/modules/apps/ResetStateKeeperFuel/app.css" />
+  <div class="rskFuelCollapsed" ng-if="collapsed">
+    <button class="rskFuelRestoreButton" ng-click="toggleCollapsed()" title="Expand Reset State Keeper" aria-label="Expand Reset State Keeper">⛽</button>
+  </div>
+  <div class="rskFuelExpanded" ng-if="!collapsed">
+  <div class="rskFuelHeader rskFuelHeaderRow">
+    <div class="rskFuelHeaderText">
+      <div class="rskFuelEyebrow">RESET STATE KEEPER</div>
+      <div class="rskFuelTitle">Fuel Management</div>
+    </div>
+    <div class="rskFuelHeaderActions">
+      <button class="rskFuelButton rskFuelResetButton" ng-click="clearSavedStates()" title="Clear saved states — same action as F10" aria-label="Clear saved states">↻ Reset</button>
+      <button class="rskFuelButton rskFuelCollapseButton" ng-click="toggleCollapsed()" title="Collapse panel" aria-label="Collapse panel">−</button>
+    </div>
+  </div>
+
+  <div class="rskFuelCurrent">
+    <div class="rskFuelCurrentLabel">Fuel Consumption</div>
+    <div class="rskFuelCurrentValue">×{{ formatNumber(multiplier, 1) }}</div>
+  </div>
+
+  <div class="rskFuelAdjust">
+    <button class="rskFuelButton rskFuelStep" ng-click="adjustMultiplier(-0.5)" aria-label="Decrease fuel consumption">−</button>
+    <div class="rskFuelRangeBox">
+      <div class="rskFuelRangeLabel">Multiplier: <strong>×{{ formatNumber(sliderDraft, 1) }}</strong></div>
+      <input class="rskFuelRange" type="range" min="0.1" max="20" step="0.1"
+             ng-model="sliderDraft" ng-mouseup="applyMultiplier(sliderDraft)"
+             ng-touchend="applyMultiplier(sliderDraft)" ng-keyup="applyMultiplier(sliderDraft)" />
+    </div>
+    <button class="rskFuelButton rskFuelStep" ng-click="adjustMultiplier(0.5)" aria-label="Increase fuel consumption">+</button>
+  </div>
+
+  <div class="rskFuelManual">
+    <label for="rskFuelCustom">Custom value (×0.1–×100)</label>
+    <input id="rskFuelCustom" type="number" min="0.1" max="100" step="0.1" ng-model="manualValue" />
+    <button class="rskFuelButton rskFuelApply" ng-click="applyMultiplier(manualValue)">Apply</button>
+  </div>
+
+  <div class="rskFuelPresetsLabel">Quick Multiplier Presets</div>
+  <div class="rskFuelPresets">
+    <button class="rskFuelPreset" ng-repeat="preset in presets track by preset"
+            ng-class="{'is-active': multiplier === preset}"
+            ng-click="applyMultiplier(preset)">×{{ formatNumber(preset, 1) }}</button>
+  </div>
+
+  <div class="rskFuelDivider"></div>
+  <div class="rskFuelFuelHeader">
+    <div>
+      <div class="rskFuelEyebrow">CURRENT VEHICLE TANK</div>
+      <div class="rskFuelFuelTitle">Fuel Level</div>
+    </div>
+    <button class="rskFuelButton rskFuelFull" ng-click="fillTank()" ng-disabled="!fuelAvailable">Full Tank</button>
+  </div>
+
+  <div class="rskFuelFuelStats" ng-if="fuelAvailable">
+    <div class="rskFuelLiters"><strong>{{ formatNumber(fuelCurrent, 1) }} L</strong><span>of {{ formatNumber(fuelCapacity, 1) }} L</span></div>
+    <div class="rskFuelPercent">{{ formatNumber(fuelPercent, 0) }}%</div>
+  </div>
+  <div class="rskFuelFuelStats rskFuelUnavailable" ng-if="!fuelAvailable && !fuelStatusReceived">
+    <span>Detecting tank capacity…</span>
+  </div>
+  <div class="rskFuelFuelStats rskFuelUnavailable" ng-if="!fuelAvailable && fuelStatusReceived">
+    <span>Fuel tank data is not available for this vehicle.</span>
+  </div>
+  <div class="rskFuelProgress"><div class="rskFuelProgressFill" ng-style="{'width': fuelPercent + '%'}"></div></div>
+
+  <div class="rskFuelManual rskFuelFuelManual">
+    <label for="rskFuelAmount">Set fuel amount (liters)</label>
+    <input id="rskFuelAmount" type="number" min="0" ng-attr-max="{{fuelCapacity}}" step="0.1"
+           ng-model="fuelDraft" ng-focus="fuelEditing=true" ng-blur="fuelEditing=false" ng-disabled="!fuelAvailable" />
+    <button class="rskFuelButton rskFuelApply" ng-click="setFuelAmount(fuelDraft)" ng-disabled="!fuelAvailable">Set</button>
+  </div>
+  <div class="rskFuelFuelPresets">
+    <button class="rskFuelPreset" ng-repeat="percent in fuelPresets track by percent"
+            ng-click="setFuelPercent(percent)" ng-disabled="!fuelAvailable">{{percent}}%</button>
+  </div>
+  <div class="rskFuelFooter">Fuel is adjusted in liters based on the current vehicle's tank capacity. Fuel consumption settings are saved automatically.</div>
+  </div>
+</div>

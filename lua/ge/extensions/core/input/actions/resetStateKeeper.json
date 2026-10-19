@@ -1,0 +1,11 @@
+{
+  "resetStateKeeper_clearSavedStates": {
+    "cat": "vehicle",
+    "order": 990,
+    "ctx": "tlua",
+    "actionMap": "Normal",
+    "onDown": "extensions.resetStateKeeper.clearSavedStates()",
+    "title": "Reset State Keeper: clear saved states",
+    "desc": "Clears saved fuel, temperatures, headlights and hazard state. The next recovery uses BeamNG's normal reset behavior."
+  }
+}

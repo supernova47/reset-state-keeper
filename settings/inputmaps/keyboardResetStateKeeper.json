@@ -1,0 +1,8 @@
+{
+  "bindings": [
+    {
+      "action": "resetStateKeeper_clearSavedStates",
+      "control": "f10"
+    }
+  ]
+}
