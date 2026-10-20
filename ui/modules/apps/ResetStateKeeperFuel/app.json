@@ -1,15 +1,17 @@
 {
   "name": "Reset State Keeper — Fuel Control",
   "author": "Reset State Keeper",
-  "version": "0.8.1",
-  "description": "Adjust fuel consumption and fuel level, clear cached vehicle states, and collapse the HUD panel.",
+  "version": "0.8.3",
+  "description": "Adjust fuel use and level, clear cached states, and use a draggable, independently resizable HUD.",
   "directive": "resetStateKeeperFuel",
   "domElement": "<reset-state-keeper-fuel></reset-state-keeper-fuel>",
   "css": {
     "width": "360px",
     "height": "445px",
+    "min-width": "280px",
+    "min-height": "280px",
     "top": "180px",
     "left": "180px"
   },
-  "preserveAspectRatio": true
+  "preserveAspectRatio": false
 }

@@ -2,6 +2,7 @@
 -- Tested only by static review in this package; run in BeamNG.drive to validate API compatibility.
 
 local M = {}
+M.dependencies = { "core_input_actions", "core_input_bindings" }
 
 local POLL_INTERVAL = 0.20
 local RESET_FIRST_DELAY = 0.18
@@ -407,7 +408,7 @@ local function makeRestoreCommand(state)
     string.format("%.8f", state.block or INVALID_TEMP),
     string.format("%.8f", state.cylinder or INVALID_TEMP),
     tostring(state.lights or 0),
-    tostring(state.hazard or 0)
+    tostring((tonumber(state.hazard) or 0) > 0)
   }
 
   return ([==[
@@ -1028,6 +1029,23 @@ end
 local function onExtensionLoaded()
   loadConfig()
   log("I", "resetStateKeeper", "Loaded. Caching player-vehicle state for reset restoration.")
+
+  -- The action list can be cached before user-folder mods are mounted. Clear that
+  -- cache and ask the bindings extension to reload after this mod's action JSON exists.
+  local actionPath = "/lua/ge/extensions/core/input/actions/resetStateKeeper.json"
+  local actions = extensions and extensions.core_input_actions
+  if actions and type(actions.onFileChanged) == "function" then
+    pcall(actions.onFileChanged, actionPath)
+  else
+    log("W", "resetStateKeeper", "Could not refresh the input-action cache; the clear-states key may need to be rebound.")
+  end
+
+  local bindings = extensions and extensions.core_input_bindings
+  if bindings and type(bindings.onFileChanged) == "function" then
+    pcall(bindings.onFileChanged, "/settings/inputmaps/keyboard.diff")
+  else
+    log("W", "resetStateKeeper", "Could not refresh input bindings; the clear-states key may need to be rebound.")
+  end
 end
 
 M.onUpdate = onUpdate
